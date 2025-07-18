@@ -1,16 +1,34 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 import random
 from posts.models import Post
+from posts.forms import PostForm, PostModelForm
 
 def home(request):
-     return render(request, "base.html")
+     if request.method == "GET":
+          return render(request, "base.html")
+     else:
+          return HttpResponse("HELLO YOU'RE AT THE POLIS INDEX")
 
 def post_list_view(request):
-     posts = Post.objects.all()
-     return render(request, "posts/post_list.html", context={'posts': posts})
+     if request.method == "GET":
+          posts = Post.objects.all()
+          return render(request, "posts/post_list.html", context={'posts': posts})
 
 def post_detail_view(request, post_id):
-     post = Post.objects.filter(id=post_id).first()
-     return render(request, "posts/post_detail.html", context={"post": post})
-
-
+     if request.method == "GET":
+          post = Post.objects.filter(id=post_id).first()
+          return render(request, "posts/post_detail.html", context={"post": post})
+     
+def post_create_view(request):
+     if request.method == "GET":
+          form = PostModelForm()
+          return render(request, "posts/post_create.html", context={"form": form})
+     if request.method == "POST":
+          form = PostModelForm(request.POST, request.FILES)
+          if not form.is_valid():
+               return render(request, "posts/post_create.html", context={"form": form})
+          title = form.cleaned_data.get("title")
+          content = form.cleaned_data.get("content")
+          image = form.cleaned_data.get("image")
+          post = Post.objects.create(title=title, content=content, image=image)
+          return redirect(f"/posts/{post.id}")

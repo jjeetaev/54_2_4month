@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-  {% for post in posts %}
   <div class="card" style="width: 18rem; margin-bottom: 20px;">
     {% if post.image %}
       <img src="{{ post.image.url }}" class="card-img-top" alt="Post image">
@@ -13,8 +12,6 @@
       <h5 class="card-title">{{ post.title }}</h5>
       <p class="card-text">{{ post.content }}</p>
       <p class="card-text">Rate: {{ post.rate }}</p>
-      <a href="/posts/{{ post.id }}" class="btn btn-primary">Go somewhere</a>
     </div>
   </div>
-  {% endfor %}
 {% endblock %}
