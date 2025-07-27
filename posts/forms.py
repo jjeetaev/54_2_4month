@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Category, Post
 
 class PostModelForm(forms.ModelForm):
     class Meta:
@@ -27,3 +27,18 @@ class PostForm(forms.Form):
         if content and content.isdigit():
             raise forms.ValidationError("Content cannot be a number")
         return cleaned_data
+    
+class SearchForm(forms.Form):
+    search = forms.CharField(required=False)
+    category_id = forms.ModelChoiceField(queryset=Category.objects.all(), required=False)
+    orderings = (
+        ("rate", "Rate"),
+        ("-rate", "Rate (desc)"),
+        ("created_at", "Created at"),
+        ("-created_at", "Created at (desc)"),
+        ("updated_at", "Updated at"),
+        ("-updated_at", "Updated at (desc)"),
+        (None, None)
+    )
+    
+    ordering = forms.ChoiceField(choices=orderings, required=False)
